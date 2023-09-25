@@ -110,21 +110,29 @@ public class board {
                     //3. Statement 생성
                     stmt = conn.createStatement();
 
-//            System.out.println("3번까지 문제 없이 실행");
+
 
                     System.out.print("주소록을 수정할 번호를 입력하세요 : ");
                     int id = Integer.parseInt(scan.nextLine());
-                    System.out.print("새로운 이름 : ");
-                    String name = scan.nextLine();
-                    System.out.print("새로운 주소 : ");
-                    String adrs = scan.nextLine();
-                    System.out.print("새로운 전화번호 : ");
-                    String cnum = scan.nextLine();
 
-                    //4. SQL 처리하고 결과 ResultSet에 받아오기
-                    String sql = "UPDATE address SET name = '"+ name + "', adrs = '"+adrs +"', cnum = '"+cnum+ "' WHERE id = "+ id;
-                    stmt.executeUpdate(sql);
-                    System.out.println("주소록 수정이 완료 되었습니다.");
+                    String checkSql = "SELECT * FROM address WHERE Id = " + id;
+                    rs = stmt.executeQuery(checkSql);
+
+                    if(rs.next()){
+                        System.out.print("새로운 이름 : ");
+                        String name = scan.nextLine();
+                        System.out.print("새로운 주소 : ");
+                        String adrs = scan.nextLine();
+                        System.out.print("새로운 전화번호 : ");
+                        String cnum = scan.nextLine();
+
+                        //4. SQL 처리하고 결과 ResultSet에 받아오기
+                        String sql = "UPDATE address SET name = '" + name + "', adrs = '" + adrs + "', cnum = '" + cnum + "' WHERE id = " + id;
+                        stmt.executeUpdate(sql);
+                        System.out.println("주소록 수정이 완료 되었습니다.");
+                    }else{
+                        System.out.println("지정된 ID를 가진 레코드가 존재하지 않습니다.");
+                    }
 
 
                 } catch (Exception e) {
