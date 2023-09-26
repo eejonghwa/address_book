@@ -19,9 +19,8 @@ public class board {
             System.out.print("명령어 : ");
             String cmd = scan.nextLine();
             if (cmd.equals("exit")) {
-    exit();
-            }
-            else if (cmd.equals("add")) {
+                exit();
+            } else if (cmd.equals("add")) {
                 add();
             } else if (cmd.equals("list")) {
                 list();
@@ -34,7 +33,8 @@ public class board {
             }
         }
     }
-    static void exit(){
+
+    static void exit() {
         System.out.println("프로그램을 종료합니다.");
         System.exit(0);
     }
@@ -71,10 +71,10 @@ public class board {
     static void list() {
         Statement stmt = null; // SQL 전송하는 객체
         ResultSet rs = null; // 결과 받아오는 객체
+        Connection conn = null;
 
         try {
-
-            Connection conn = getConnection();
+            conn = getConnection();
             stmt = conn.createStatement();
             String sql = String.format("SELECT * FROM add_book");
             rs = stmt.executeQuery(sql);
@@ -94,17 +94,32 @@ public class board {
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     static void update() {
         Statement stmt = null; // SQL 전송하는 객체
-
+        Connection conn = getConnection();
+        ResultSet rs = null; // 결과 받아오는 객체
 
         try {
-            Connection conn = getConnection();
+            conn = getConnection();
             stmt = conn.createStatement();
-            ResultSet rs = null; // 결과 받아오는 객체
 
 
             System.out.print("주소록을 수정할 번호를 입력하세요 : ");
@@ -132,20 +147,41 @@ public class board {
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
         }
+
+
     }
 
     static void delete() {
         Statement stmt = null; // SQL 전송하는 객체
+        Connection conn = null;
+
 
         try {
-            Connection conn = getConnection();
+            conn = getConnection();
             stmt = conn.createStatement();
 
             System.out.print("주소록을 삭제할 번호를 입력하세요 : ");
-            int targetId = Integer.parseInt(scan.nextLine());
-            String sql = "DELETE FROM add_book WHERE id = " + targetId;
-            targetId = stmt.executeUpdate(sql);
+            int id = Integer.parseInt(scan.nextLine());
+            String sql = "DELETE FROM add_book WHERE id = " + id;
+            int targetId = stmt.executeUpdate(sql);
 
             if (targetId > 0) {
                 System.out.println("삭제가 완료되었습니다.");
@@ -156,6 +192,19 @@ public class board {
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
         }
 
     }
@@ -166,10 +215,13 @@ public class board {
         String keyword = scan.nextLine();
         String sql = String.format("SELECT * FROM add_book WHERE `name` LIKE '%%%s%%' ", keyword);
 
+        Connection conn = null; // DB 접속하는 객체
+        Statement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = getConnection(); // DB 접속하는 객체
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            conn = getConnection(); // DB 접속하는 객체
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -191,6 +243,22 @@ public class board {
         } catch (
                 Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
         }
 
     }
